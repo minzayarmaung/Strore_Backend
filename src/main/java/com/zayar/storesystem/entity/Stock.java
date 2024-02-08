@@ -73,8 +73,8 @@ public class Stock {
     public float getAmount() {
         return amount;
     }
-
     public void setAmount(float amount) {
-        this.amount = amount;
+        this.amount = this.quantity * price;
     }
+
 }
