@@ -11,16 +11,16 @@ import java.sql.Time;
 public class Invoice {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private long invoiceId;
 
     private String cashierName;
 
     private String branch;
 
-    private Date date;
+    private String date;
 
-    private Time time;
+    private String time;
 
     private String center;
 
@@ -48,19 +48,19 @@ public class Invoice {
         this.branch = branch;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public Time getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Time time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
@@ -75,7 +75,7 @@ public class Invoice {
     public Invoice() {
     }
 
-    public Invoice(String cashierName, String branch, Date date, Time time, String center) {
+    public Invoice(String cashierName, String branch, String date, String time, String center) {
         this.cashierName = cashierName;
         this.branch = branch;
         this.date = date;

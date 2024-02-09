@@ -10,7 +10,7 @@ import java.sql.Time;
 public class ResultTable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @ManyToOne
     private Invoice invoice;
