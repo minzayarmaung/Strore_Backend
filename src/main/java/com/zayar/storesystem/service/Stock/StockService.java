@@ -13,4 +13,7 @@ public interface StockService {
 
     // Getting Data from the Stock Data
     public List<Stock> getAllStockData();
+
+    // Deleting Data from the Stock Data
+    public void deleteStock(long id);
 }

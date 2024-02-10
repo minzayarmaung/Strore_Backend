@@ -18,16 +18,24 @@ public class StockController {
     @Autowired
     private StockService stockService;
 
+    // Saving Stock Data
     @PostMapping("/save/stockData")
     public String saveStockData(@RequestBody Stock stock){
         stockService.addStockData(stock);
         return "Stock Data Added Successfully";
     }
 
+    // Getting Stock Data
     @GetMapping("/all_stock_data")
     public List<Stock> getStockData(){
         System.out.println("All Stock Data : ");
         return stockService.getAllStockData();
     }
 
+    // Deleting Stock Data
+    @DeleteMapping("/deleteStockData/{id}")
+    public String deleteStockData(@PathVariable("id") long id){
+        stockService.deleteStock(id);
+        return "Stock Data Deleted Successfully !";
+    }
 }

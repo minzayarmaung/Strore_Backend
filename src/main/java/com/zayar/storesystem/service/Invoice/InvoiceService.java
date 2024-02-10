@@ -14,4 +14,7 @@ public interface InvoiceService {
 
     // Getting Invoice Data
     public List<Invoice> getAllInvoiceData();
+
+    // Deleting Invoice Data
+    public void deleteInvoice(Long id);
 }

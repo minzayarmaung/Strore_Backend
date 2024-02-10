@@ -14,13 +14,21 @@ public class StockServiceImpl implements StockService {
     @Autowired
     private StockRepository stockRepository;
 
+    // Saving Stock Data
     @Override
     public Stock addStockData(Stock stock) {
         return stockRepository.save(stock);
     }
 
+    // Getting Stock Data
     @Override
     public List<Stock> getAllStockData() {
         return (List<Stock>) stockRepository.findAll();
+    }
+
+    // Deleting Stock Data
+    @Override
+    public void deleteStock(long id) {
+        stockRepository.deleteById(id);
     }
 }

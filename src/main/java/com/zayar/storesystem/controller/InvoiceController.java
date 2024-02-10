@@ -19,16 +19,19 @@ public class InvoiceController {
     @Autowired
     private InvoiceService invoiceService;
 
+    // Saving Invoice Data
     @PostMapping("/save/invoiceData")
     public String saveInvoiceData(@RequestBody Invoice invoice){
         invoiceService.addInvoiceData(invoice);
         return "Invoice Data added Successfully !";
     }
 
+    // Getting Invoice Data
     @GetMapping("/all_invoice_data")
     public List<Invoice> getInvoiceData(){
         System.out.println("All Invoice Data : ");
         return invoiceService.getAllInvoiceData();
     }
 
+    // Deleting Invoice
 }
