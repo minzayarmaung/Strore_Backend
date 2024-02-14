@@ -17,4 +17,7 @@ public interface InvoiceService {
 
     // Deleting Invoice Data
     public void deleteInvoice(Long id);
+
+    // Soft Delete
+    public void softDelete(Long id);
 }

@@ -28,4 +28,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     public void deleteInvoice(Long id) {
         invoiceRepository.deleteById(id);
     }
+
+    // Soft Delete
+    @Override
+    public void softDelete(Long id) {
+        Invoice invoice = invoiceRepository.findById(id).orElse(null);
+        if(invoice != null){
+            invoice.setStatus("inactive");
+            invoiceRepository.save(invoice);
+        }
+    }
 }

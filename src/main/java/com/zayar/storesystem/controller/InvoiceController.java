@@ -6,6 +6,7 @@ import com.zayar.storesystem.service.Invoice.InvoiceService;
 import com.zayar.storesystem.serviceImpl.Invoice.InvoiceServiceImpl;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
@@ -33,5 +34,11 @@ public class InvoiceController {
         return invoiceService.getAllInvoiceData();
     }
 
-    // Deleting Invoice
+    // Soft Delete Function
+    @PutMapping("/table/softDelete/{id}")
+    public ResponseEntity<String> softDeleteData(@PathVariable Long id){
+        invoiceService.softDelete(id);
+        return ResponseEntity.ok("Entity Soft Deleted Successfully !");
+    }
+
 }

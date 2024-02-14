@@ -24,6 +24,9 @@ public class Invoice {
 
     private String center;
 
+    @Column(name = "status")
+    private String status;
+
     public long getInvoiceId() {
         return invoiceId;
     }
@@ -72,15 +75,25 @@ public class Invoice {
         this.center = center;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Invoice() {
     }
 
-    public Invoice(String cashierName, String branch, String date, String time, String center) {
+    public Invoice(long invoiceId, String cashierName, String branch, String date, String time, String center, String status) {
+        this.invoiceId = invoiceId;
         this.cashierName = cashierName;
         this.branch = branch;
         this.date = date;
         this.time = time;
         this.center = center;
+        this.status = status;
     }
 }
 

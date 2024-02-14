@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Stock {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.AUTO)
+   // @GeneratedValue(strategy = GenerationType.AUTO)
     private long stockId;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -17,6 +17,7 @@ public class Stock {
     private int quantity;
     private float price;
     private float amount;
+
 
     public Stock() {
     }
@@ -74,7 +75,7 @@ public class Stock {
         return amount;
     }
     public void setAmount(float amount) {
-        this.amount = this.quantity * price;
+        this.amount = this.quantity * this.price;
     }
 
 }
