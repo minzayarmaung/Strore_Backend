@@ -38,4 +38,24 @@ public class InvoiceServiceImpl implements InvoiceService {
             invoiceRepository.save(invoice);
         }
     }
+
+
+    // Get By ID
+    @Override
+    public Invoice getInvoiceDataById(Long id) {
+        return invoiceRepository.findById(id).get();
+    }
+
+    // Updating Invoice Data
+    @Override
+    public Invoice updateInvoiceData(Long id, Invoice invoice) {
+        Invoice invoice1 = new Invoice();
+        invoice1.setInvoiceId(id);
+        invoice1.setCashierName(invoice.getCashierName());
+        invoice1.setBranch(invoice.getBranch());
+        invoice1.setDate(invoice.getDate());
+        invoice1.setTime(invoice.getTime());
+        invoice1.setCenter(invoice.getCenter());
+        return invoiceRepository.save(invoice1);
+    }
 }

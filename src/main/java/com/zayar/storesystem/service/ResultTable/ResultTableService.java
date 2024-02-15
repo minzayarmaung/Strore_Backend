@@ -11,4 +11,6 @@ public interface ResultTableService {
 
     // Getting data for Result Table
     public List<ResultTable> getAllData();
+
+    // Exporting
 }

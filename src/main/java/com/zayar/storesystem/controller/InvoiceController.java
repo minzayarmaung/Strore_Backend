@@ -1,15 +1,12 @@
 package com.zayar.storesystem.controller;
 
-import com.zayar.storesystem.Repository.InvoiceRepository;
 import com.zayar.storesystem.entity.Invoice;
 import com.zayar.storesystem.service.Invoice.InvoiceService;
-import com.zayar.storesystem.serviceImpl.Invoice.InvoiceServiceImpl;
-import jakarta.persistence.criteria.CriteriaBuilder;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,5 +37,19 @@ public class InvoiceController {
         invoiceService.softDelete(id);
         return ResponseEntity.ok("Entity Soft Deleted Successfully !");
     }
+
+    // Get Invoice Data By Id
+    @RequestMapping("/invoice/{id}")
+    public Invoice getInvoiceDataById(@PathVariable("id") long id){
+        return invoiceService.getInvoiceDataById(id);
+    }
+
+    // Updating Invoice Data
+    @PutMapping("/updateInvoice/{id}")
+    public String updateInvoiceData(@PathVariable("id") long id, @RequestBody Invoice invoice){
+        invoiceService.updateInvoiceData(id , invoice);
+        return "Invoice Data Update Successfully !...";
+    }
+
 
 }

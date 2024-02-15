@@ -20,4 +20,10 @@ public interface InvoiceService {
 
     // Soft Delete
     public void softDelete(Long id);
+
+    // Get By Id
+    public Invoice getInvoiceDataById(Long id);
+
+    // Update Invoice Data
+    public Invoice updateInvoiceData(Long id , Invoice invoice);
 }
