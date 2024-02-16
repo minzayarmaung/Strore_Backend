@@ -34,6 +34,9 @@ public class ImportExcelController {
 
 
             Iterator<Row> rowIterator = sheet.iterator();
+            if(rowIterator.hasNext()){
+                rowIterator.next(); // Skipping Header Row
+            }
             while (rowIterator.hasNext()){
                 Row row = rowIterator.next();
 
