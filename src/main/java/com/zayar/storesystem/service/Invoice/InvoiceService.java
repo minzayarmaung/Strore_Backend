@@ -3,7 +3,9 @@ package com.zayar.storesystem.service.Invoice;
 import com.zayar.storesystem.entity.Invoice;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.plaf.multi.MultiPanelUI;
 import java.util.List;
 
 @Service
@@ -26,4 +28,5 @@ public interface InvoiceService {
 
     // Update Invoice Data
     public Invoice updateInvoiceData(Long id , Invoice invoice);
+
 }
