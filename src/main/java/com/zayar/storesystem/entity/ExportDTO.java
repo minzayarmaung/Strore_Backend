@@ -9,10 +9,11 @@ public class ExportDTO {
     private String branch;
     private String center;
     private String stockName;
-    private Float stockPrice;
+    private float stockPrice;
     private int stockQuantity;
+    private float amount;
 
-    public ExportDTO(long invoiceId, String cashierName, String date, String time, String branch, String center, String stockName, Float stockPrice, int stockQuantity) {
+    public ExportDTO(long invoiceId, String cashierName, String date, String time, String branch, String center, String stockName, float stockPrice, int stockQuantity, float amount) {
         this.invoiceId = invoiceId;
         this.cashierName = cashierName;
         this.date = date;
@@ -22,6 +23,7 @@ public class ExportDTO {
         this.stockName = stockName;
         this.stockPrice = stockPrice;
         this.stockQuantity = stockQuantity;
+        this.amount = amount;
     }
 
     public ExportDTO() {
@@ -83,11 +85,11 @@ public class ExportDTO {
         this.stockName = stockName;
     }
 
-    public Float getStockPrice() {
+    public float getStockPrice() {
         return stockPrice;
     }
 
-    public void setStockPrice(Float stockPrice) {
+    public void setStockPrice(float stockPrice) {
         this.stockPrice = stockPrice;
     }
 
@@ -97,5 +99,13 @@ public class ExportDTO {
 
     public void setStockQuantity(int stockQuantity) {
         this.stockQuantity = stockQuantity;
+    }
+
+    public float getAmount() {
+        return amount;
+    }
+
+    public void setAmount(float amount) {
+        this.amount = amount;
     }
 }

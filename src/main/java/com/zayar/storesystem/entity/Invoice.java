@@ -11,7 +11,7 @@ import java.sql.Time;
 public class Invoice {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long invoiceId;
 
     private String cashierName;

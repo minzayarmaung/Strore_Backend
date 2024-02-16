@@ -21,6 +21,7 @@ public class StockController {
     // Saving Stock Data
     @PostMapping("/save/stockData")
     public String saveStockData(@RequestBody Stock stock){
+        stock.setAmount(stock.getAmount());
         stockService.addStockData(stock);
         return "Stock Data Added Successfully";
     }

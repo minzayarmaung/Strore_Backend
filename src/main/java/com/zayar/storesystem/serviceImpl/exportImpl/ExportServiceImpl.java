@@ -44,6 +44,7 @@ public class ExportServiceImpl implements ExportService {
                     exportDTO.setStockName(stock.getName());
                     exportDTO.setStockPrice(stock.getPrice());
                     exportDTO.setStockQuantity(stock.getQuantity());
+                    exportDTO.setAmount(stock.getAmount());
 
                     exportData.add(exportDTO);
                 }
@@ -67,6 +68,8 @@ public class ExportServiceImpl implements ExportService {
         headerRow.createCell(6).setCellValue("Stock Name");
         headerRow.createCell(7).setCellValue("Stock Price");
         headerRow.createCell(8).setCellValue("Stock Quantity");
+        headerRow.createCell(9).setCellValue("Amount");
+
 
         // Populate data rows
         int rowNum = 1;
@@ -81,6 +84,7 @@ public class ExportServiceImpl implements ExportService {
             row.createCell(6).setCellValue(exportDTO.getStockName());
             row.createCell(7).setCellValue(exportDTO.getStockPrice());
             row.createCell(8).setCellValue(exportDTO.getStockQuantity());
+            row.createCell(9).setCellValue(exportDTO.getAmount());
         }
 
         return workbook;
