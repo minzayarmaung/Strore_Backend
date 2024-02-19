@@ -27,7 +27,7 @@ public class StockController {
     }
 
     // Getting Stock Data
-    @GetMapping("/all_stock_data")
+    @GetMapping("/view_stocks")
     public List<Stock> getStockData(){
         System.out.println("All Stock Data : ");
         return stockService.getAllStockData();
