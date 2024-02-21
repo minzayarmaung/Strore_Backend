@@ -58,4 +58,10 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice1.setCenter(invoice.getCenter());
         return invoiceRepository.save(invoice1);
     }
+
+    // Getting Invoice table with Stock Id and Stock Amount
+    @Override
+    public List<Object[]> getInvoiceWithStockDetails() {
+        return invoiceRepository.getInvoiceWithStockDetails();
+    }
 }

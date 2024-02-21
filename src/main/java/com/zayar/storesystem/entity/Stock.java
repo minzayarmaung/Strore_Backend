@@ -1,5 +1,6 @@
 package com.zayar.storesystem.entity;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 @Entity
@@ -7,9 +8,10 @@ import jakarta.persistence.*;
 public class Stock {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long stockId;
 
+    @JsonIgnoreProperties("stocks")
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
@@ -17,18 +19,19 @@ public class Stock {
     private int quantity;
     private float price;
     private float amount;
-
+    private String status;
 
     public Stock() {
     }
 
-    public Stock(long stockId, Invoice invoice, String name, int quantity, float price, float amount) {
+    public Stock(long stockId, Invoice invoice, String name, int quantity, float price, float amount, String status) {
         this.stockId = stockId;
         this.invoice = invoice;
         this.name = name;
         this.quantity = quantity;
         this.price = price;
         this.amount = amount;
+        this.status = status;
     }
 
     public long getStockId() {
@@ -78,4 +81,11 @@ public class Stock {
         this.amount = this.quantity * this.price;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

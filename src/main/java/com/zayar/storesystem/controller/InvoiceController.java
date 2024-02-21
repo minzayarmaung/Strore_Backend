@@ -51,5 +51,10 @@ public class InvoiceController {
         return "Invoice Data Update Successfully !...";
     }
 
+    // Getting Stock Table with Stock Id and Stock Amount
+    @GetMapping("/invoice-with-stock-details")
+    public List<Object[]> getInvoiceWithStockDetails() {
+        return invoiceService.getInvoiceWithStockDetails();
+    }
 
 }

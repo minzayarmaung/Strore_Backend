@@ -29,4 +29,7 @@ public interface InvoiceService {
     // Update Invoice Data
     public Invoice updateInvoiceData(Long id , Invoice invoice);
 
+    // Get Stock Id and Stock Amount
+    public List<Object[]> getInvoiceWithStockDetails();
+
 }

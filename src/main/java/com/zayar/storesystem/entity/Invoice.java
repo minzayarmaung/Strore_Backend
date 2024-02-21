@@ -1,10 +1,12 @@
 package com.zayar.storesystem.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.util.List;
 
 @Entity
 @Table(name = "invoice")
@@ -30,6 +32,10 @@ public class Invoice {
     public long getInvoiceId() {
         return invoiceId;
     }
+
+    //@JsonManagedReference
+    @OneToMany(mappedBy = "invoice")
+    private List<Stock> stocks;
 
     public void setInvoiceId(long invoiceId) {
         this.invoiceId = invoiceId;
@@ -83,10 +89,18 @@ public class Invoice {
         this.status = status;
     }
 
+    public List<Stock> getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(List<Stock> stocks) {
+        this.stocks = stocks;
+    }
+
     public Invoice() {
     }
 
-    public Invoice(long invoiceId, String cashierName, String branch, String date, String time, String center, String status) {
+    public Invoice(long invoiceId, String cashierName, String branch, String date, String time, String center, String status, List<Stock> stocks) {
         this.invoiceId = invoiceId;
         this.cashierName = cashierName;
         this.branch = branch;
@@ -94,6 +108,7 @@ public class Invoice {
         this.time = time;
         this.center = center;
         this.status = status;
+        this.stocks = stocks;
     }
 }
 

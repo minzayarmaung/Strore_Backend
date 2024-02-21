@@ -17,7 +17,13 @@ public class StockServiceImpl implements StockService {
     // Saving Stock Data
     @Override
     public Stock addStockData(Stock stock) {
-        return stockRepository.save(stock);
+        Stock newStock =new Stock();
+        newStock.setInvoice(stock.getInvoice());
+        newStock.setName(stock.getName());
+        newStock.setPrice(stock.getPrice());
+        newStock.setQuantity(stock.getQuantity());
+        newStock.setAmount(stock.getAmount());
+        return stockRepository.save(newStock);
     }
 
     // Getting Stock Data
@@ -31,4 +37,41 @@ public class StockServiceImpl implements StockService {
     public void deleteStock(long id) {
         stockRepository.deleteById(id);
     }
+
+    @Override
+    public void softDelete(long id) {
+        Stock stock = stockRepository.findById(id).orElse(null);
+        if(stock != null){
+            stock.setStatus("inactive");
+            stockRepository.save(stock);
+        }
+    }
+
+    @Override
+    public Stock getStockData(long id) {
+        return stockRepository.findById(id).get();
+    }
+
+    @Override
+    public Stock updateStockData(Long id, Stock stock) {
+        Stock stock1 = new Stock();
+        stock1.setStockId(id);
+        stock1.setName(stock.getName());
+        stock1.setPrice(stock.getPrice());
+        stock1.setQuantity(stock.getQuantity());
+        stock1.setAmount(stock.getAmount());
+
+        return stockRepository.save(stock1);
+    }
+
+    @Override
+    public List<Long> getAvailableStockIds() {
+        List<Long> availableStockIds = stockRepository.findAvailableStockIds();
+        return availableStockIds;
+    }
+
+//    @Override
+//    public List<Object[]> getStockIdAndAmountByInvoiceId(Long invoiceId) {
+//        return stockRepository.findStockIdAndAmountByInvoiceId(invoiceId);
+//    }
 }
