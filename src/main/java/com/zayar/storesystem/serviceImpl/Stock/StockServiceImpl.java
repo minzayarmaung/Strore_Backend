@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StockServiceImpl implements StockService {
@@ -47,22 +48,33 @@ public class StockServiceImpl implements StockService {
         }
     }
 
+    // Get Stock Data By ID
     @Override
     public Stock getStockData(long id) {
         return stockRepository.findById(id).get();
     }
 
+
     @Override
     public Stock updateStockData(Long id, Stock stock) {
-        Stock stock1 = new Stock();
-        stock1.setStockId(id);
-        stock1.setName(stock.getName());
-        stock1.setPrice(stock.getPrice());
-        stock1.setQuantity(stock.getQuantity());
-        stock1.setAmount(stock.getAmount());
-
-        return stockRepository.save(stock1);
+        Optional<Stock> existingStockOptional = stockRepository.findById(id);
+        if (existingStockOptional.isPresent()) {
+            Stock existingStock = existingStockOptional.get();
+            if(stock.getName() != null){
+                existingStock.setName(stock.getName());
+            }
+            existingStock.setName(stock.getName());
+            existingStock.setPrice(stock.getPrice());
+            existingStock.setQuantity(stock.getQuantity());
+            existingStock.setAmount(stock.getAmount());
+            return stockRepository.save(existingStock);
+        } else {
+            // Handle case where stock with given id is not found
+            // You can throw an exception or return null, depending on your requirement
+            return null;
+        }
     }
+
 
     @Override
     public List<Long> getAvailableStockIds() {
