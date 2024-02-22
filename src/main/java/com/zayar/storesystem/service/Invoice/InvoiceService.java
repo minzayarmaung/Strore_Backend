@@ -32,4 +32,6 @@ public interface InvoiceService {
     // Get Stock Id and Stock Amount
     public List<Object[]> getInvoiceWithStockDetails();
 
+    // Getting Available Invoice Ids
+    public List<Long> getAvailableInvoiceIds();
 }

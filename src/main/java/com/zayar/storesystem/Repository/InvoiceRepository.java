@@ -17,4 +17,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice , Long> {
     @Query("SELECT i.invoiceId, i.cashierName, i.date, i.time, i.branch, i.center, i.status, s.stockId,s.name, s.amount , s.quantity , s.price FROM Invoice i LEFT JOIN i.stocks s")
     List<Object[]> getInvoiceWithStockDetails();
 
+    @Query("SELECT i.invoiceId FROM Invoice i WHERE i.status = 'active' OR i.status IS NULL")
+    List<Long> findAvailableInvoiceIds();
+
 }

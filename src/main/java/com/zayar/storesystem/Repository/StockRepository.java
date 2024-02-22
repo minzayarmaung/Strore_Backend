@@ -14,6 +14,6 @@ import java.util.Optional;
 public interface StockRepository extends JpaRepository<Stock, Long> {
     List<Stock> findByInvoiceInvoiceId(long invoiceId);
 
-    @Query("SELECT s.stockId FROM Stock s WHERE s.status = 'active'")
+    @Query("SELECT s.stockId FROM Stock s WHERE s.status = 'active' OR s.status IS NULL")
     List<Long> findAvailableStockIds();
 }

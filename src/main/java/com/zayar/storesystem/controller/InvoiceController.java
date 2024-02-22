@@ -57,4 +57,9 @@ public class InvoiceController {
         return invoiceService.getInvoiceWithStockDetails();
     }
 
+    // Getting Available Invoice Ids
+    @GetMapping("/invoice/getInvoiceIds")
+    public List<Long> getAvailableInvoiceIds (){
+        return invoiceService.getAvailableInvoiceIds();
+    }
 }

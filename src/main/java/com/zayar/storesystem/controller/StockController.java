@@ -26,6 +26,9 @@ public class StockController {
     @PostMapping("/save/stockData")
     public String saveStockData(@RequestBody List<Stock> stocks){
         for (Stock stock : stocks) {
+            if(stock.getInvoice() == null){
+                throw new IllegalArgumentException("Invoice is NULL for Stock with id :" + stock.getStockId());
+            }
             // Set the amount for each stock before saving
             Optional<Invoice> existingInvoiceOptional =
                     invoiceRepository.findById(stock.getInvoice().getInvoiceId());
@@ -36,6 +39,7 @@ public class StockController {
                         ("Invoice with id" + stock.getInvoice().getInvoiceId() + " does not exist.");
             }
 
+            stock.setStatus("active");
             stock.setAmount(stock.getQuantity() * stock.getPrice());
             stockService.addStockData(stock);
         }

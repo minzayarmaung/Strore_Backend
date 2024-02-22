@@ -64,4 +64,10 @@ public class InvoiceServiceImpl implements InvoiceService {
     public List<Object[]> getInvoiceWithStockDetails() {
         return invoiceRepository.getInvoiceWithStockDetails();
     }
+
+    @Override
+    public List<Long> getAvailableInvoiceIds() {
+        List<Long> availableInvoiceIds = invoiceRepository.findAvailableInvoiceIds();
+        return availableInvoiceIds;
+    }
 }
