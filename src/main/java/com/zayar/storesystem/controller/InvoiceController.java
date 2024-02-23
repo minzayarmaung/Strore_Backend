@@ -1,10 +1,15 @@
 package com.zayar.storesystem.controller;
 
 import com.zayar.storesystem.entity.Invoice;
+import com.zayar.storesystem.entity.InvoiceAndStocksDTO;
+import com.zayar.storesystem.entity.Stock;
+import com.zayar.storesystem.entity.UpdateDataDTO;
 import com.zayar.storesystem.service.Invoice.InvoiceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
@@ -61,5 +66,34 @@ public class InvoiceController {
     @GetMapping("/invoice/getInvoiceIds")
     public List<Long> getAvailableInvoiceIds (){
         return invoiceService.getAvailableInvoiceIds();
+    }
+
+    // Updating Both Invoice and Stock Data
+    @PutMapping("/updateInvoiceAndStock/{invoiceId}")
+    public ResponseEntity<String> updateInvoiceAndStockData(@PathVariable long invoiceId, @RequestBody UpdateDataDTO updateData){
+        Invoice updatedInvoice = updateData.getUpdatedInvoice();
+        List<Stock> updatedStocks = updateData.getUpdatedStocks();
+
+        invoiceService.updateInvoiceAndStockData(invoiceId , updatedInvoice , updatedStocks);
+
+        return ResponseEntity.ok("Invoice and Stock Updated Successfully");
+    }
+
+    @PostMapping("/saveInvoiceAndStockData")
+    public ResponseEntity<?> saveInvoiceAndStocks(@RequestBody InvoiceAndStocksDTO invoiceAndStocksDTO){
+        try{
+            Long invoiceId = invoiceAndStocksDTO.getInvoiceId();
+            if(invoiceId != null){
+                invoiceAndStocksDTO.getInvoice().setInvoiceId(invoiceId);
+            }else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("invoiceId is NULL");
+            }
+            invoiceService.saveInvoiceAndStocks(invoiceAndStocksDTO.getInvoice() , invoiceAndStocksDTO.getStocks());
+            return ResponseEntity.ok("Saved Invoice And Stock Data Successfully");
+        }catch (Exception e){
+            e.printStackTrace();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Occurred While Saving Invoice and Stock Data");
+        }
     }
 }

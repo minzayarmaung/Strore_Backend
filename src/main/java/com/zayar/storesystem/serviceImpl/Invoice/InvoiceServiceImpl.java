@@ -1,9 +1,13 @@
 package com.zayar.storesystem.serviceImpl.Invoice;
 
 import com.zayar.storesystem.Repository.InvoiceRepository;
+import com.zayar.storesystem.Repository.StockRepository;
 import com.zayar.storesystem.entity.Invoice;
+import com.zayar.storesystem.entity.Stock;
 import com.zayar.storesystem.service.Invoice.InvoiceService;
+import com.zayar.storesystem.service.Stock.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +17,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
     private InvoiceRepository invoiceRepository;
+
+    @Autowired
+    private StockRepository stockRepository;
+
+    @Autowired
+    private StockService stockService;
 
     @Override
     public Invoice addInvoiceData(Invoice invoice) {
@@ -69,5 +79,30 @@ public class InvoiceServiceImpl implements InvoiceService {
     public List<Long> getAvailableInvoiceIds() {
         List<Long> availableInvoiceIds = invoiceRepository.findAvailableInvoiceIds();
         return availableInvoiceIds;
+    }
+
+    @Override
+    public void updateInvoiceAndStockData(long invoiceId, Invoice updatedInvoice, List<Stock> updatedStocks) {
+        Invoice existingInvoice = invoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new IllegalArgumentException("Invoice Not Found"));
+
+        existingInvoice.setCashierName(updatedInvoice.getCashierName());
+        existingInvoice.setBranch(updatedInvoice.getBranch());
+        existingInvoice.setCenter(updatedInvoice.getCenter());
+        existingInvoice.setDate(updatedInvoice.getDate());
+        existingInvoice.setTime(updatedInvoice.getTime());
+
+        for(Stock updateStock : updatedStocks){
+            stockService.updateStock(updateStock);
+        }
+    }
+
+    @Override
+    public void saveInvoiceAndStocks(Invoice invoice, List<Stock> stocks) {
+        Invoice savedInvoice = invoiceRepository.save(invoice);
+        for (Stock stock : stocks){
+            stock.setInvoice(savedInvoice);
+            stockRepository.save(stock);
+        }
     }
 }

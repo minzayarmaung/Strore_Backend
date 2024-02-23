@@ -27,6 +27,9 @@ public interface StockService {
     // Updating Data from the Stock Data
     public Stock updateStockData(Long id , Stock stock);
 
+    // Updating Stock Data
+    public void updateStock(Stock stock);
+
     // Getting Available Stock Ids
     public List<Long> getAvailableStockIds();
 

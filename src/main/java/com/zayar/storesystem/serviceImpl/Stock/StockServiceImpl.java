@@ -75,6 +75,20 @@ public class StockServiceImpl implements StockService {
         }
     }
 
+    @Override
+    public void updateStock(Stock stock) {
+        Stock existingStock = stockRepository.findById(stock.getStockId())
+                .orElseThrow(() -> new IllegalArgumentException("Stock Not Found"));
+
+        existingStock.setName(stock.getName());
+        existingStock.setQuantity(stock.getQuantity());
+        existingStock.setPrice(stock.getPrice());
+        existingStock.setAmount(stock.getQuantity() * stock.getPrice());
+        existingStock.setStatus(stock.getStatus());
+
+        stockRepository.save(existingStock);
+    }
+
 
     @Override
     public List<Long> getAvailableStockIds() {
