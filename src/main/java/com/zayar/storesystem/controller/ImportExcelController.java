@@ -66,6 +66,11 @@ public class ImportExcelController {
                             break;
                         case NUMERIC:
                             double numericValue = cell.getNumericCellValue();
+                            if (columnIndex == 0){
+                                int invoiceId = (int) cell.getNumericCellValue();
+                                System.out.println("Invoice ID:" + invoiceId);
+                                invoice.setInvoiceId(invoiceId);
+                            }
                             if (columnIndex == 9) {
                                 stock.setAmount((float) numericValue);
                             } else if (columnIndex == 7) {
