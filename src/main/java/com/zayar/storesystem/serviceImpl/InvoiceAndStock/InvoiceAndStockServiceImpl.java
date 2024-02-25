@@ -11,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class InvoiceAndStockServiceImpl implements InvoiceAndStockService {
@@ -26,38 +27,46 @@ public class InvoiceAndStockServiceImpl implements InvoiceAndStockService {
     @Transactional
     @Override
     public ResponseEntity<?> updateInvoiceAndStock(Invoice invoice, List<Stock> stocks) {
+        System.out.println("Service - Received invoice ID for update: " + invoice.getInvoiceId());
+        System.out.println("Service - Invoice data: " + invoice.toString());
+        System.out.println("Service - Stock data : " + stocks.toString());
         // Update Invoice
-        Optional<Invoice> existingInvoiceOptional = invoiceRepository.findById(invoice.getInvoiceId());
-        if (existingInvoiceOptional.isPresent()) {
-            Invoice existingInvoice = existingInvoiceOptional.get();
-            existingInvoice.setCashierName(invoice.getCashierName());
-            existingInvoice.setBranch(invoice.getBranch());
-            existingInvoice.setDate(invoice.getDate());
-            existingInvoice.setTime(invoice.getTime());
-            existingInvoice.setCenter(invoice.getCenter());
+        Invoice existingInvoice = invoiceRepository.findById(invoice.getInvoiceId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Invoice ID Not Found : " + invoice.getInvoiceId()));
 
-            invoiceRepository.save(existingInvoice);
+        existingInvoice.setCashierName(invoice.getCashierName());
+        existingInvoice.setBranch(invoice.getBranch());
+        existingInvoice.setDate(invoice.getDate());
+        existingInvoice.setTime(invoice.getTime());
+        existingInvoice.setCenter(invoice.getCenter());
 
-            // Update Stock
+        invoiceRepository.save(existingInvoice);
+
+        if (stocks != null && !stocks.isEmpty()) {
+            List<String> notFoundStockIds = new ArrayList<>();
+
             for (Stock stock : stocks) {
-                Optional<Stock> existingStockOptional = stockRepository.findById(stock.getStockId());
-                if (existingStockOptional.isPresent()) {
-                    Stock existingStock = existingStockOptional.get();
+                stockRepository.findById(stock.getStockId()).ifPresentOrElse(existingStock -> {
                     existingStock.setName(stock.getName());
                     existingStock.setQuantity(stock.getQuantity());
                     existingStock.setPrice(stock.getPrice());
                     existingStock.setAmount(stock.getAmount());
                     existingStock.setStatus(stock.getStatus());
-
-                    existingStock.setInvoice(existingInvoice);
+                    // Assuming the invoice is already updated and linked
                     stockRepository.save(existingStock);
-                } else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Stock ID Not Found : " + stock.getStockId());
-                }
+                }, () -> notFoundStockIds.add(String.valueOf(stock.getStockId())));
             }
-            return ResponseEntity.ok("Invoice and Stock Data Updated Successfully.");
+
+            if (!notFoundStockIds.isEmpty()) {
+                // Handle the error scenario, maybe logging or sending a specific response
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Some stock IDs not found: " + String.join(", ", notFoundStockIds));
+            }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invoice ID not Found :" + invoice.getInvoiceId());
+            System.out.println("Stock list is empty or null.");
         }
+
+        return ResponseEntity.ok("Invoice and Stock Data Updated Successfully!");
     }
 }

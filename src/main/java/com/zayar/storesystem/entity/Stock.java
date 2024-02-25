@@ -12,7 +12,7 @@ public class Stock {
     private long stockId;
 
     @JsonIgnoreProperties("stocks")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
     private String name;
