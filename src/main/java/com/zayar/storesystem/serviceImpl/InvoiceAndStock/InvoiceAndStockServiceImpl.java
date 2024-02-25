@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class InvoiceAndStockServiceImpl implements InvoiceAndStockService {
@@ -28,6 +29,7 @@ public class InvoiceAndStockServiceImpl implements InvoiceAndStockService {
     @Override
     public ResponseEntity<?> updateInvoiceAndStock(Invoice invoice, List<Stock> stocks) {
         System.out.println("Service - Received invoice ID for update: " + invoice.getInvoiceId());
+        System.out.println("Received stock IDs: " + stocks.stream().map(Stock::getStockId).collect(Collectors.toList()));
         System.out.println("Service - Invoice data: " + invoice.toString());
         System.out.println("Service - Stock data : " + stocks.toString());
         // Update Invoice
@@ -45,23 +47,29 @@ public class InvoiceAndStockServiceImpl implements InvoiceAndStockService {
 
         if (stocks != null && !stocks.isEmpty()) {
             List<String> notFoundStockIds = new ArrayList<>();
-
             for (Stock stock : stocks) {
+                if(stock.getStockId() <= 0) {
+                    notFoundStockIds.add(String.valueOf(stock.getStockId()));
+                    System.out.println("Processing Stock ID :"+ stock.getStockId());
+                    // Handle new stocks or error out for invalid ID, based on your application's requirements
+                    continue; // Skipping new or invalid stocks for now
+                }
                 stockRepository.findById(stock.getStockId()).ifPresentOrElse(existingStock -> {
                     existingStock.setName(stock.getName());
                     existingStock.setQuantity(stock.getQuantity());
                     existingStock.setPrice(stock.getPrice());
                     existingStock.setAmount(stock.getAmount());
                     existingStock.setStatus(stock.getStatus());
-                    // Assuming the invoice is already updated and linked
+                    existingStock.setInvoice(existingInvoice); // Link stock to the existing invoice
+
+                    System.out.println("Updating Existing Stock ID :" + existingStock.getStockId());
+
                     stockRepository.save(existingStock);
                 }, () -> notFoundStockIds.add(String.valueOf(stock.getStockId())));
             }
 
             if (!notFoundStockIds.isEmpty()) {
-                // Handle the error scenario, maybe logging or sending a specific response
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Some stock IDs not found: " + String.join(", ", notFoundStockIds));
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Some stock IDs not found: " + String.join(", ", notFoundStockIds));
             }
         } else {
             System.out.println("Stock list is empty or null.");

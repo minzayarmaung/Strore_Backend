@@ -19,15 +19,16 @@ public class InvoiceAndStockController {
 
     @PutMapping("/updateInvoiceAndStock/{id}")
     public ResponseEntity<?> updateInvoiceAndStock(@PathVariable("id") Long id, @RequestBody InvoiceAndStocksDTO dto) {
+        System.out.println("Controller - Received DTO : " + dto);
+        dto.getStocks().forEach(stock -> System.out.println("DTO Stock ID : " + stock.getStockId()));
         System.out.println("Controller - Updating invoice ID: " + id);
         System.out.println("Controller - Invoice Data : " + dto.getInvoice());
         System.out.println("Controller - Stock Data : " + dto.getStocks());
+
         Invoice invoice = dto.getInvoice();
         invoice.setInvoiceId(id);
-        List<Stock> stocks = invoice.getStocks();
+        List<Stock> stocks = dto.getStocks();
 
-        invoiceAndStockService.updateInvoiceAndStock(invoice, stocks);
-
-        return ResponseEntity.ok("Invoice and Stock Data Updated Successfully..");
+        return invoiceAndStockService.updateInvoiceAndStock(invoice , stocks);
     }
 }
