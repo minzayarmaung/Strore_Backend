@@ -36,8 +36,6 @@ public interface InvoiceService {
     // Getting Available Invoice Ids
     public List<Long> getAvailableInvoiceIds();
 
-    // Updating Both Invoice And Stock Data
-    public void updateInvoiceAndStockData(long invoiceId, Invoice updatedInvoice, List<Stock> updatedStocks);
 
     // Saving Both Invoice and Stock Data
     public void saveInvoiceAndStocks(Invoice invoice , List<Stock> stocks);

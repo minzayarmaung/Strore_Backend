@@ -24,17 +24,17 @@ public class StockController {
 
     // Saving Stock Data
     @PostMapping("/save/stockData")
-    public String saveStockData(@RequestBody List<Stock> stocks){
+    public String saveStockData(@RequestBody List<Stock> stocks) {
         for (Stock stock : stocks) {
-            if(stock.getInvoice() == null){
+            if (stock.getInvoice() == null) {
                 throw new IllegalArgumentException("Invoice is NULL for Stock with id :" + stock.getStockId());
             }
             // Set the amount for each stock before saving
             Optional<Invoice> existingInvoiceOptional =
                     invoiceRepository.findById(stock.getInvoice().getInvoiceId());
-            if(existingInvoiceOptional.isPresent()){
+            if (existingInvoiceOptional.isPresent()) {
                 stock.setInvoice(existingInvoiceOptional.get());
-            }else {
+            } else {
                 throw new IllegalArgumentException
                         ("Invoice with id" + stock.getInvoice().getInvoiceId() + " does not exist.");
             }
@@ -48,47 +48,42 @@ public class StockController {
 
     // Getting Stock Data
     @GetMapping("/view_stocks")
-    public List<Stock> getStockData(){
+    public List<Stock> getStockData() {
         System.out.println("All Stock Data : ");
         return stockService.getAllStockData();
     }
 
     // Deleting Stock Data
     @DeleteMapping("/deleteStockData/{id}")
-    public String deleteStockData(@PathVariable("id") long id){
+    public String deleteStockData(@PathVariable("id") long id) {
         stockService.deleteStock(id);
         return "Stock Data Deleted Successfully !";
     }
 
     // Soft Delete Stock Data
     @PutMapping("stock/softDelete/{id}")
-    public ResponseEntity<String> softDeleteData(@PathVariable Long id){
+    public ResponseEntity<String> softDeleteData(@PathVariable Long id) {
         stockService.softDelete(id);
         return ResponseEntity.ok("Entity Soft Deleted Successfully !");
     }
 
     // Get Stock By ID
     @RequestMapping("/stock/{id}")
-    public Stock getStockById(@PathVariable("id") long id){
+    public Stock getStockById(@PathVariable("id") long id) {
         return stockService.getStockData(id);
     }
 
     // Updating Stock Data
     @PutMapping("/updateStock/{id}")
-    public String updateStockData(@PathVariable("id") long id , @RequestBody Stock stock){
-        stockService.updateStockData(id , stock);
+    public String updateStockData(@PathVariable("id") long id, @RequestBody Stock stock) {
+        stockService.updateStockData(id, stock);
         return "Stock Data Updated Successfully...";
     }
 
     // Getting Available Stock Ids
     @GetMapping("/stocks/getStockIds")
-    public List<Long> getAvailableStockIds(){
+    public List<Long> getAvailableStockIds() {
         return stockService.getAvailableStockIds();
     }
 
-//    // Getting Stock Id and Stock Amount by Invoice Id
-//    @GetMapping("/invoice/{invoiceId}/stock")
-//    public List<Object[]> getStockIdAndAmountByInvoiceId(@PathVariable Long invoiceId){
-//        return stockService.getStockIdAndAmountByInvoiceId(invoiceId);
-//    }
 }

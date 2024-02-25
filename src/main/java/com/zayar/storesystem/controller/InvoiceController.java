@@ -68,17 +68,6 @@ public class InvoiceController {
         return invoiceService.getAvailableInvoiceIds();
     }
 
-    // Updating Both Invoice and Stock Data
-    @PutMapping("/updateInvoiceAndStock/{invoiceId}")
-    public ResponseEntity<String> updateInvoiceAndStockData(@PathVariable long invoiceId, @RequestBody UpdateDataDTO updateData){
-        Invoice updatedInvoice = updateData.getUpdatedInvoice();
-        List<Stock> updatedStocks = updateData.getUpdatedStocks();
-
-        invoiceService.updateInvoiceAndStockData(invoiceId , updatedInvoice , updatedStocks);
-
-        return ResponseEntity.ok("Invoice and Stock Updated Successfully");
-    }
-
     @PostMapping("/saveInvoiceAndStockData")
     public ResponseEntity<?> saveInvoiceAndStocks(@RequestBody InvoiceAndStocksDTO invoiceAndStocksDTO){
         try{

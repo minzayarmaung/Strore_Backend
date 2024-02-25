@@ -81,21 +81,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         return availableInvoiceIds;
     }
 
-    @Override
-    public void updateInvoiceAndStockData(long invoiceId, Invoice updatedInvoice, List<Stock> updatedStocks) {
-        Invoice existingInvoice = invoiceRepository.findById(invoiceId)
-                .orElseThrow(() -> new IllegalArgumentException("Invoice Not Found"));
-
-        existingInvoice.setCashierName(updatedInvoice.getCashierName());
-        existingInvoice.setBranch(updatedInvoice.getBranch());
-        existingInvoice.setCenter(updatedInvoice.getCenter());
-        existingInvoice.setDate(updatedInvoice.getDate());
-        existingInvoice.setTime(updatedInvoice.getTime());
-
-        for(Stock updateStock : updatedStocks){
-            stockService.updateStock(updateStock);
-        }
-    }
 
     @Override
     public void saveInvoiceAndStocks(Invoice invoice, List<Stock> stocks) {
