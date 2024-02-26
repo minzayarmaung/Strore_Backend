@@ -48,7 +48,7 @@ public class InvoiceAndStockServiceImpl implements InvoiceAndStockService {
         if (stocks != null && !stocks.isEmpty()) {
             List<String> notFoundStockIds = new ArrayList<>();
             for (Stock stock : stocks) {
-                if(stock.getStockId() <= 0) {
+                if(stock.getStockId() <= 0 || stock.getStockId() == 0) {
                     notFoundStockIds.add(String.valueOf(stock.getStockId()));
                     System.out.println("Processing Stock ID :"+ stock.getStockId());
                     // Handle new stocks or error out for invalid ID, based on your application's requirements
