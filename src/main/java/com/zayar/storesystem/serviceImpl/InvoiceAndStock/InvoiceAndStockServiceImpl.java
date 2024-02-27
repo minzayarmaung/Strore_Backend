@@ -49,6 +49,18 @@ public class InvoiceAndStockServiceImpl implements InvoiceAndStockService {
             List<String> notFoundStockIds = new ArrayList<>();
             for (Stock stock : stocks) {
                 if(stock.getStockId() <= 0 || stock.getStockId() == 0) {
+                    Stock newStock = new Stock();
+                    // Setting a new Stock If there is a Stock Id with 0 XD:3
+                    newStock.setName(stock.getName());
+                    newStock.setQuantity(stock.getQuantity());
+                    newStock.setPrice(stock.getPrice());
+                    newStock.setAmount(stock.getAmount());
+                    newStock.setStatus(stock.getStatus());
+                    newStock.setInvoice(existingInvoice);
+                    stockRepository.save(newStock);
+                    System.out.println("Create a New Stock Data : " + newStock.getStockId() +
+                            " with Associated Invoice ID " + existingInvoice);
+
                     notFoundStockIds.add(String.valueOf(stock.getStockId()));
                     System.out.println("Processing Stock ID :"+ stock.getStockId());
                     // Handle new stocks or error out for invalid ID, based on your application's requirements
