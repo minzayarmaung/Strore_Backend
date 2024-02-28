@@ -3,6 +3,7 @@ package com.zayar.storesystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -28,6 +29,10 @@ public class Invoice {
 
     @Column(name = "status")
     private String status;
+
+    @Lob
+    @Column(name = "image_data" , length = 5000000)
+    private byte[] imageData;
 
     public long getInvoiceId() {
         return invoiceId;
@@ -97,10 +102,18 @@ public class Invoice {
         this.stocks = stocks;
     }
 
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
+
     public Invoice() {
     }
 
-    public Invoice(long invoiceId, String cashierName, String branch, String date, String time, String center, String status, List<Stock> stocks) {
+    public Invoice(long invoiceId, String cashierName, String branch, String date, String time, String center, String status, byte[] imageData, List<Stock> stocks) {
         this.invoiceId = invoiceId;
         this.cashierName = cashierName;
         this.branch = branch;
@@ -108,8 +121,8 @@ public class Invoice {
         this.time = time;
         this.center = center;
         this.status = status;
+        this.imageData = imageData;
         this.stocks = stocks;
     }
 }
-
 

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "stock")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Stock {
 
     @Id

@@ -7,7 +7,6 @@ import com.zayar.storesystem.entity.Stock;
 import com.zayar.storesystem.service.Invoice.InvoiceService;
 import com.zayar.storesystem.service.Stock.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

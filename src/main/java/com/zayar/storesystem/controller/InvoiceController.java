@@ -1,5 +1,6 @@
 package com.zayar.storesystem.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zayar.storesystem.entity.Invoice;
 import com.zayar.storesystem.entity.InvoiceAndStocksDTO;
 import com.zayar.storesystem.entity.Stock;
@@ -10,10 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200/")
@@ -68,14 +73,31 @@ public class InvoiceController {
         return invoiceService.getAvailableInvoiceIds();
     }
 
-    @PostMapping("/saveInvoiceAndStockData")
-    public ResponseEntity<?> saveInvoiceAndStocks(@RequestBody InvoiceAndStocksDTO invoiceAndStocksDTO){
+    @PostMapping(path = "/saveInvoiceAndStockData" , consumes = {"multipart/form-data"})
+    public ResponseEntity<?> saveInvoiceAndStocks(@RequestParam ("invoiceAndStocks") String invoiceAndStocksDTOJson ,
+                                                  @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
+
+
         try{
-            Long invoiceId = invoiceAndStocksDTO.getInvoiceId();
+            InvoiceAndStocksDTO invoiceAndStocksDTO = new ObjectMapper().readValue
+                    (invoiceAndStocksDTOJson , InvoiceAndStocksDTO.class);
+
+            Long invoiceId = invoiceAndStocksDTO.getInvoice().getInvoiceId();
+            System.out.println("Received invoiceAndStocksDTOJson: " + invoiceAndStocksDTOJson);
+            System.out.println("Controller : InvoiceID : " + invoiceId);
+
             if(invoiceId != null){
                 invoiceAndStocksDTO.getInvoice().setInvoiceId(invoiceId);
             }else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("invoiceId is NULL");
+            }
+
+            if(profileImage != null && !profileImage.isEmpty()){
+                byte[] imageData = profileImage.getBytes();
+                invoiceAndStocksDTO.getInvoice().setImageData(imageData);
+                System.out.println("Received Image Size : " + profileImage.getSize());
+            }else {
+                System.out.println("Controller : Image Data Not Receiving...");
             }
             invoiceService.saveInvoiceAndStocks(invoiceAndStocksDTO.getInvoice() , invoiceAndStocksDTO.getStocks());
             return ResponseEntity.ok("Saved Invoice And Stock Data Successfully");

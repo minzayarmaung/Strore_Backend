@@ -1,14 +1,16 @@
 package com.zayar.storesystem.entity;
 
 import org.apache.catalina.LifecycleState;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public class InvoiceAndStocksDTO {
 
-    private Long invoiceId;
+    private long invoiceId;
     private Invoice invoice;
     private List<Stock> stocks;
+    private MultipartFile profileImage;
 
 
     public Long getInvoiceId() {
@@ -33,5 +35,13 @@ public class InvoiceAndStocksDTO {
 
     public void setStocks(List<Stock> stocks) {
         this.stocks = stocks;
+    }
+
+    public MultipartFile getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(MultipartFile profileImage) {
+        this.profileImage = profileImage;
     }
 }
