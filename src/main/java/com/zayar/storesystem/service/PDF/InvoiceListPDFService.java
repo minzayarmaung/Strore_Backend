@@ -6,11 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @Service
-public interface PDFService {
-
-    // Get by Each ID
-    byte[] generatePDF(Long invoiceId);
-
-
-
+public interface InvoiceListPDFService {
+    // Getting All Invoice with Stock Details
+    public ByteArrayInputStream generatePDF(List<Object[]> invoiceDetails);
 }

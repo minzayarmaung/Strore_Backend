@@ -15,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class PDFServiceImpl implements PDFService {
@@ -37,6 +39,7 @@ public class PDFServiceImpl implements PDFService {
             return null;
         }
     }
+
     private byte[] createPDF(Invoice invoice) throws IOException {
         try (PDDocument document = new PDDocument()) {
             PDPage page = new PDPage();
