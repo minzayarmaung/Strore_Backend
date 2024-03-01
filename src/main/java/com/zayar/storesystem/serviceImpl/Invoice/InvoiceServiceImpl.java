@@ -65,7 +65,14 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice1.setDate(invoice.getDate());
         invoice1.setTime(invoice.getTime());
         invoice1.setCenter(invoice.getCenter());
+
+        String imagePath = generateImagePath(id);
+        invoice1.setImagePath(imagePath);
+
         return invoiceRepository.save(invoice1);
+    }
+    private String generateImagePath(Long invoiceId){
+        return "" + invoiceId + ".jpg";
     }
 
     // Getting Invoice table with Stock Id and Stock Amount
@@ -80,12 +87,13 @@ public class InvoiceServiceImpl implements InvoiceService {
         return availableInvoiceIds;
     }
 
-
     @Override
     public void saveInvoiceAndStocks(Invoice invoice, List<Stock> stocks) {
         Invoice savedInvoice = invoiceRepository.save(invoice);
         for (Stock stock : stocks){
             stock.setInvoice(savedInvoice);
+            //stockRepository.save(stock);
+            stock.setAmount(stock.getQuantity() * stock.getPrice());
             stockRepository.save(stock);
         }
     }

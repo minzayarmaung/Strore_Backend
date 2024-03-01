@@ -17,18 +17,18 @@ public class InvoiceAndStockController {
     @Autowired
     private InvoiceAndStockService invoiceAndStockService;
 
-    @PutMapping("/updateInvoiceAndStock/{id}")
-    public ResponseEntity<?> updateInvoiceAndStock(@PathVariable("id") Long id, @RequestBody InvoiceAndStocksDTO dto) {
-        System.out.println("Controller - Received DTO : " + dto);
-        dto.getStocks().forEach(stock -> System.out.println("DTO Stock ID : " + stock.getStockId()));
-        System.out.println("Controller - Updating invoice ID: " + id);
-        System.out.println("Controller - Invoice Data : " + dto.getInvoice());
-        System.out.println("Controller - Stock Data : " + dto.getStocks());
-
-        Invoice invoice = dto.getInvoice();
-        invoice.setInvoiceId(id);
-        List<Stock> stocks = dto.getStocks();
-
-        return invoiceAndStockService.updateInvoiceAndStock(invoice , stocks);
-    }
+        @PutMapping("/updateInvoiceAndStock/{id}")
+        public ResponseEntity<?> updateInvoiceAndStock(@PathVariable("id") Long id, @RequestBody InvoiceAndStocksDTO dto) {
+            System.out.println("Controller - Received DTO : " + dto);
+            dto.getStocks().forEach(stock -> System.out.println("DTO Stock ID : " + stock.getStockId()));
+            System.out.println("Controller - Updating invoice ID: " + id);
+            System.out.println("Controller - Invoice Data : " + dto.getInvoice());
+            System.out.println("Controller - Stock Data : " + dto.getStocks());
+    
+            Invoice invoice = dto.getInvoice();
+            invoice.setInvoiceId(id);
+            List<Stock> stocks = dto.getStocks();
+    
+            return invoiceAndStockService.updateInvoiceAndStock(invoice , stocks);
+        }
 }

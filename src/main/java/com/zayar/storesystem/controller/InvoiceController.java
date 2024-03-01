@@ -18,8 +18,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:4200/")
 @RestController
@@ -77,34 +82,38 @@ public class InvoiceController {
     public ResponseEntity<?> saveInvoiceAndStocks(@RequestParam ("invoiceAndStocks") String invoiceAndStocksDTOJson ,
                                                   @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
 
-
         try{
-            InvoiceAndStocksDTO invoiceAndStocksDTO = new ObjectMapper().readValue
-                    (invoiceAndStocksDTOJson , InvoiceAndStocksDTO.class);
+            // JSON TO DTO
+            InvoiceAndStocksDTO invoiceAndStocksDTO = new ObjectMapper()
+                    .readValue(invoiceAndStocksDTOJson , InvoiceAndStocksDTO.class);
 
-            Long invoiceId = invoiceAndStocksDTO.getInvoice().getInvoiceId();
-            System.out.println("Received invoiceAndStocksDTOJson: " + invoiceAndStocksDTOJson);
-            System.out.println("Controller : InvoiceID : " + invoiceId);
-
-            if(invoiceId != null){
-                invoiceAndStocksDTO.getInvoice().setInvoiceId(invoiceId);
-            }else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("invoiceId is NULL");
+            if(invoiceAndStocksDTO.getInvoice().getInvoiceId() == 0){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invoice ID is NULL..");
             }
-
+            // Save Profile Image
             if(profileImage != null && !profileImage.isEmpty()){
-                byte[] imageData = profileImage.getBytes();
-                invoiceAndStocksDTO.getInvoice().setImageData(imageData);
-                System.out.println("Received Image Size : " + profileImage.getSize());
+                String directoryPath = "E:\\Store System\\Strore_Backend\\src\\main\\java\\com\\zayar\\storesystem\\images";
+                String filename = "profileImage_" + invoiceAndStocksDTO.getInvoice().getInvoiceId() +".jpg";
+                Path path = Paths.get(directoryPath, filename);
+
+                Files.createDirectories(path.getParent());
+
+                Files.copy(profileImage.getInputStream() , path , StandardCopyOption.REPLACE_EXISTING);
+
+                invoiceAndStocksDTO.getInvoice().setImagePath(filename);
             }else {
-                System.out.println("Controller : Image Data Not Receiving...");
+                System.out.println("Controller : No Profile Image Received.");
             }
+            // Saving Invoice and Stock Data
             invoiceService.saveInvoiceAndStocks(invoiceAndStocksDTO.getInvoice() , invoiceAndStocksDTO.getStocks());
-            return ResponseEntity.ok("Saved Invoice And Stock Data Successfully");
+            return ResponseEntity.ok("Saved Invoice and Stock Data Successfully.");
+        }catch (IOException e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Proccessing Image Upload");
         }catch (Exception e){
             e.printStackTrace();
-
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Occurred While Saving Invoice and Stock Data");
         }
+
     }
 }

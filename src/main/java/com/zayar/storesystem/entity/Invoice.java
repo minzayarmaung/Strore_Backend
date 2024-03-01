@@ -1,6 +1,7 @@
 package com.zayar.storesystem.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "invoice")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Invoice {
 
     @Id
@@ -30,9 +32,9 @@ public class Invoice {
     @Column(name = "status")
     private String status;
 
-    @Lob
-    @Column(name = "image_data" , length = 5000000)
-    private byte[] imageData;
+
+    @Column(name = "image_data" )
+    private String imagePath;
 
     public long getInvoiceId() {
         return invoiceId;
@@ -102,18 +104,18 @@ public class Invoice {
         this.stocks = stocks;
     }
 
-    public byte[] getImageData() {
-        return imageData;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setImageData(byte[] imageData) {
-        this.imageData = imageData;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public Invoice() {
     }
 
-    public Invoice(long invoiceId, String cashierName, String branch, String date, String time, String center, String status, byte[] imageData, List<Stock> stocks) {
+    public Invoice(long invoiceId, String cashierName, String branch, String date, String time, String center, String status, String imagePath, List<Stock> stocks) {
         this.invoiceId = invoiceId;
         this.cashierName = cashierName;
         this.branch = branch;
@@ -121,7 +123,7 @@ public class Invoice {
         this.time = time;
         this.center = center;
         this.status = status;
-        this.imageData = imageData;
+        this.imagePath = imagePath;
         this.stocks = stocks;
     }
 }
