@@ -1,8 +1,11 @@
 package com.zayar.storesystem.controller;
 
+import com.zayar.storesystem.entity.Stock;
 import com.zayar.storesystem.service.Invoice.InvoiceService;
 import com.zayar.storesystem.service.PDF.InvoiceListPDFService;
 import com.zayar.storesystem.service.PDF.PDFService;
+import com.zayar.storesystem.service.PDF.StockListPDFService;
+import com.zayar.storesystem.service.Stock.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -23,10 +26,16 @@ public class PDFController {
     private InvoiceService invoiceService;
 
     @Autowired
+    private StockService stockService;
+
+    @Autowired
     private PDFService pdfService;
 
     @Autowired
     private InvoiceListPDFService invoiceListPDFService;
+
+    @Autowired
+    private StockListPDFService stockListPDFService;
 
     @GetMapping("/pdf/generatePDFById/{invoiceId}")
     public ResponseEntity<byte[]> generatePDF(@PathVariable Long invoiceId){
@@ -42,6 +51,16 @@ public class PDFController {
         List<Object[]> invoiceDetails = invoiceService.getInvoiceWithStockDetails();
         ByteArrayInputStream bis = invoiceListPDFService.generatePDF(invoiceDetails);
 
+        HttpHeaders headers = new HttpHeaders();
+
+        return ResponseEntity.ok().headers(headers)
+                .contentType(MediaType.APPLICATION_PDF).body(new InputStreamResource(bis));
+    }
+
+    @GetMapping("/pdf/generatePDFStockList")
+    public ResponseEntity<InputStreamResource> downloadStockPdf(){
+        List<Stock> stockDetails = stockService.getAllStockData();
+        ByteArrayInputStream bis = stockListPDFService.generatePDF(stockDetails);
         HttpHeaders headers = new HttpHeaders();
 
         return ResponseEntity.ok().headers(headers)
