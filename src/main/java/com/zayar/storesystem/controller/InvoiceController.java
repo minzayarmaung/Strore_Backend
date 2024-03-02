@@ -92,8 +92,9 @@ public class InvoiceController {
             }
             // Save Profile Image
             if(profileImage != null && !profileImage.isEmpty()){
-                String directoryPath = "E:\\Store System\\Strore_Backend\\src\\main\\java\\com\\zayar\\storesystem\\images";
-                String filename = "profileImage_" + invoiceAndStocksDTO.getInvoice().getInvoiceId() +".jpg";
+                String directoryPath = "E:\\Development\\MIT Assignments\\Strore_Backend\\src\\main\\java\\com\\zayar\\storesystem\\images";
+
+                String filename = "ProfileImage_ " + invoiceAndStocksDTO.getInvoice().getInvoiceId() +".jpg";
                 Path path = Paths.get(directoryPath, filename);
 
                 Files.createDirectories(path.getParent());

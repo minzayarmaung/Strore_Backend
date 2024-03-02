@@ -72,7 +72,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceRepository.save(invoice1);
     }
     private String generateImagePath(Long invoiceId){
-        return "" + invoiceId + ".jpg";
+        return "profileImage_ " + invoiceId + " .jpg";
     }
 
     // Getting Invoice table with Stock Id and Stock Amount
