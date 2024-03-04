@@ -2,6 +2,7 @@ package com.zayar.storesystem.serviceImpl.PDFServiceImpl;
 
 import com.zayar.storesystem.entity.Invoice;
 import com.zayar.storesystem.entity.Stock;
+import com.zayar.storesystem.service.Image.ImageService;
 import com.zayar.storesystem.service.Invoice.InvoiceService;
 import com.zayar.storesystem.service.PDF.PDFService;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -11,6 +12,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.font.PDType1CFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,9 @@ public class PDFServiceImpl implements PDFService {
 
     @Autowired
     private InvoiceService invoiceService;
+
+    @Autowired
+    private ImageService imageService;
 
     @Override
     public byte[] generatePDF(Long invoiceId) {
@@ -52,13 +57,54 @@ public class PDFServiceImpl implements PDFService {
                 contentStream.showText("Invoice Details");
                 contentStream.endText();
 
+                byte[] imageBytes = imageService.getImageByInvoiceId(invoice.getInvoiceId());
+
+                if(imageBytes != null){
+                    PDImageXObject pdImage = PDImageXObject.createFromByteArray(document , imageBytes  , null);
+
+                    contentStream.saveGraphicsState();
+
+                    float centerX = 440;
+                    float centerY = 670;
+                    float radius = 50;
+
+                    contentStream.moveTo(centerX + radius , centerY);
+
+                    // Drawing the Circle Using Curves
+                    final float kappa = 0.552284749831F;
+
+                    contentStream.curveTo(centerX + radius, centerY + kappa * radius,
+                            centerX + kappa * radius, centerY + radius,
+                            centerX, centerY + radius);
+                    contentStream.curveTo(centerX - kappa * radius, centerY + radius,
+                            centerX - radius, centerY + kappa * radius,
+                            centerX - radius, centerY);
+                    contentStream.curveTo(centerX - radius, centerY - kappa * radius,
+                            centerX - kappa * radius, centerY - radius,
+                            centerX, centerY - radius);
+                    contentStream.curveTo(centerX + kappa * radius, centerY - radius,
+                            centerX + radius, centerY - kappa * radius,
+                            centerX + radius, centerY);
+
+                    // Close the path to complete the circle
+                    contentStream.closePath();
+
+                    // Clip to the path
+                    contentStream.clip();
+
+                    // Draw the image
+                    contentStream.drawImage(pdImage, centerX - radius, centerY - radius, 2 * radius, 2 * radius);
+
+                    // Restore the graphics state to remove the clipping path
+                    contentStream.restoreGraphicsState();
+                }
+
                 String[] detailHeaders = new String[]{
                         "Invoice ID: " + invoice.getInvoiceId(),
                         "Cashier Name: " + invoice.getCashierName(),
                         "Branch: " + invoice.getBranch(),
                         "Date: " + invoice.getDate(),
                         "Time: " + invoice.getTime()
-                        // Center not used
                 };
 
                 contentStream.beginText();

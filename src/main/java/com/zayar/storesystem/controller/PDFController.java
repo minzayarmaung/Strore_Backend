@@ -1,5 +1,6 @@
 package com.zayar.storesystem.controller;
 
+import com.zayar.storesystem.entity.Invoice;
 import com.zayar.storesystem.entity.Stock;
 import com.zayar.storesystem.service.Invoice.InvoiceService;
 import com.zayar.storesystem.service.PDF.InvoiceListPDFService;
@@ -16,6 +17,7 @@ import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200/")
@@ -47,8 +49,8 @@ public class PDFController {
     }
 
     @GetMapping("/pdf/generatePDFInvoiceList")
-    public ResponseEntity<InputStreamResource> downloadInvoicePdf(){
-        List<Object[]> invoiceDetails = invoiceService.getInvoiceWithStockDetails();
+    public ResponseEntity<InputStreamResource> downloadInvoicePdf() throws IOException {
+        List<Invoice> invoiceDetails = invoiceService.getAllInvoiceData();
         ByteArrayInputStream bis = invoiceListPDFService.generatePDF(invoiceDetails);
 
         HttpHeaders headers = new HttpHeaders();
