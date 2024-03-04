@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -15,6 +16,17 @@ public class imageServiceImpl implements ImageService {
         String imagePath = "E:\\Store System\\Strore_Backend\\src\\main\\java\\com\\zayar\\storesystem\\images\\" + "ProfileImage_" +invoiceId+ ".jpg";
 
         Path path = Paths.get(imagePath);
-        return Files.readAllBytes(path);
+        try {
+            return Files.readAllBytes(path);
+        }catch (NoSuchFileException e){
+            System.err.println("No Such File Exists : " + imagePath);
+            String defaultImagePath =
+                    "E:\\Store System\\Strore_Backend\\src\\main\\java\\com\\zayar\\storesystem\\images\\DefaultImage.jpg";
+            path = Paths.get(defaultImagePath);
+            return Files.readAllBytes(path);
+        }catch (IOException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }
