@@ -98,7 +98,7 @@ public class InvoiceListPDFServiceImpl implements InvoiceListPDFService {
             for (int j = 0; j < colCount; j++) {
                 contentStream.addRect(startX, startY, cellWidth, cellHeight);
                 contentStream.beginText();
-                contentStream.newLineAtOffset(startX + 10, startY - 20); // Adjust text positioning as needed
+                contentStream.newLineAtOffset(startX + 5, startY - 20);
                 contentStream.showText(rowData[j]);
                 contentStream.endText();
                 startX += cellWidth;
