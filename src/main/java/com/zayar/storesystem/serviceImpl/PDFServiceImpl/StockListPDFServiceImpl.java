@@ -1,10 +1,12 @@
 package com.zayar.storesystem.serviceImpl.PDFServiceImpl;
 
+import com.zayar.storesystem.entity.Invoice;
 import com.zayar.storesystem.entity.Stock;
 import com.zayar.storesystem.service.PDF.StockListPDFService;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.stereotype.Service;
 
@@ -16,83 +18,93 @@ import java.util.List;
 @Service
 public class StockListPDFServiceImpl implements StockListPDFService {
 
-    private static final int PAGE_WIDTH = 600;
-    private static final int PAGE_HEIGHT = 800;
-    private static final int MARGIN = 50;
-    private static final int ROW_HEIGHT = 20;
-    private static final int COLUMN_WIDTH = (PAGE_WIDTH - 2 * MARGIN) / 4; // Adjust based on the number of columns
-
     @Override
-    public ByteArrayInputStream generatePDF(List<Stock> stockDetails) {
+    public ByteArrayInputStream generatePDF(List<Stock> stocks) throws IOException {
         try (PDDocument document = new PDDocument()) {
-            PDPage page = new PDPage();
-            document.addPage(page);
+            PDPage firstPage = new PDPage(PDRectangle.A4);
+            document.addPage(firstPage);
 
-            PDPageContentStream contentStream = null;
-            int yOffset = PAGE_HEIGHT - MARGIN - ROW_HEIGHT;
+            try (PDPageContentStream contentStream = new PDPageContentStream(document, firstPage)) {
+                contentStream.beginText();
+                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 18);
+                contentStream.newLineAtOffset(50, 750);
+                contentStream.showText("Stock List");
+                contentStream.endText();
 
-            try {
-                contentStream = new PDPageContentStream(document, page);
-                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
-                drawTableHeader(contentStream);
-
-                for (Stock stock : stockDetails) {
-                    drawTableRow(contentStream, stock, yOffset);
-                    yOffset -= ROW_HEIGHT;
-                    if (yOffset <= MARGIN) {
-                        contentStream.close();
-                        page = new PDPage();
-                        document.addPage(page);
-                        contentStream = new PDPageContentStream(document, page);
-                        contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
-                        drawTableHeader(contentStream);
-                        yOffset = PAGE_HEIGHT - MARGIN - ROW_HEIGHT;
-                    }
+                // Setting Invoice Info Text
+                String[] infoTexts = {"MIT Company", "Insein Township, Yangon", "Myanmar", "mit.com.mm"};
+                int yPos = 720;
+                contentStream.setFont(PDType1Font.HELVETICA, 10);
+                for (String text : infoTexts) {
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(50, yPos);
+                    contentStream.showText(text);
+                    contentStream.endText();
+                    yPos -= 15;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (contentStream != null) {
-                    try {
-                        contentStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+                // Drawing table
+                drawTable(contentStream, 50, 660, stocks);
+                contentStream.close();
             }
-
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             document.save(out);
             return new ByteArrayInputStream(out.toByteArray());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 
-    private void drawTableHeader(PDPageContentStream contentStream) throws IOException {
-        contentStream.beginText();
-        contentStream.newLineAtOffset(MARGIN, PAGE_HEIGHT - MARGIN);
-        contentStream.showText("ID");
-        contentStream.newLineAtOffset(COLUMN_WIDTH, 0);
-        contentStream.showText("Name");
-        contentStream.newLineAtOffset(COLUMN_WIDTH, 0);
-        contentStream.showText("Quantity");
-        contentStream.newLineAtOffset(COLUMN_WIDTH, 0);
-        contentStream.showText("Price");
-        contentStream.endText();
-    }
+    private void drawTable(PDPageContentStream contentStream, int startX, int startY, List<Stock> stocks) throws IOException {
+        final int cellHeight = 30;
+        final int cellWidth = 100;
+        final int colCount = 5;
+        final String[] headers = {"Invoice ID", "Cashier Name", "Date", "Branch", "Center"};
 
-    private void drawTableRow(PDPageContentStream contentStream, Stock stock, int yOffset) throws IOException {
-        contentStream.beginText();
-        contentStream.newLineAtOffset(MARGIN, yOffset);
-        contentStream.showText(String.valueOf(stock.getStockId()));
-        contentStream.newLineAtOffset(COLUMN_WIDTH, 0);
-        contentStream.showText(stock.getName());
-        contentStream.newLineAtOffset(COLUMN_WIDTH, 0);
-        contentStream.showText(String.valueOf(stock.getQuantity()));
-        contentStream.newLineAtOffset(COLUMN_WIDTH, 0);
-        contentStream.showText(String.valueOf(stock.getPrice()));
-        contentStream.endText();
+        contentStream.setFont(PDType1Font.HELVETICA, 10);
+
+        // Draw Header
+        int headerY = startY;
+        for (String header : headers) {
+            contentStream.beginText();
+            contentStream.newLineAtOffset(startX + 10, headerY - 20);
+            contentStream.showText(header);
+            contentStream.endText();
+            startX += cellWidth;
+        }
+
+        startY -= cellHeight; // Move to next row position after header
+
+        // Reset startX to initial position after header row
+        startX -= cellWidth * headers.length;
+
+        // Draw Rows
+        for (Stock row : stocks) {
+            if(startY < 50){
+                contentStream.close();
+                PDPage newPage = new PDPage(PDRectangle.A4);
+                PDDocument document = new PDDocument();
+                document.addPage(newPage);
+                contentStream = new PDPageContentStream(document , newPage);
+                contentStream.setFont(PDType1Font.HELVETICA , 10);
+                startY = 750;
+            }
+            startX = 50;
+            String[] rowData = {
+                    String.valueOf(row.getStockId()),
+                    row.getName(),
+                    String.valueOf(row.getPrice()),
+                    String.valueOf(row.getQuantity()),
+                    String.valueOf(row.getAmount())
+            };
+
+            for (int j = 0; j < colCount; j++) {
+                contentStream.addRect(startX, startY, cellWidth, cellHeight);
+                contentStream.beginText();
+                contentStream.newLineAtOffset(startX + 10, startY - 20); // Adjust text positioning as needed
+                contentStream.showText(rowData[j]);
+                contentStream.endText();
+                startX += cellWidth;
+            }
+            startY -= cellHeight; // Move to next row position
+        }
+        contentStream.stroke();
     }
 }

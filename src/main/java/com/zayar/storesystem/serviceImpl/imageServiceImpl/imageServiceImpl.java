@@ -2,6 +2,7 @@ package com.zayar.storesystem.serviceImpl.imageServiceImpl;
 
 import com.zayar.storesystem.service.Image.ImageService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,20 +14,27 @@ import java.nio.file.Paths;
 public class imageServiceImpl implements ImageService {
     @Override
     public byte[] getImageByInvoiceId(Long invoiceId) throws IOException {
-        String imagePath = "E:\\Store System\\Strore_Backend\\src\\main\\java\\com\\zayar\\storesystem\\images\\" + "ProfileImage_" +invoiceId+ ".jpg";
+        String imagePath = "E:\\Store System\\Strore_Backend\\src\\main\\java\\com\\zayar\\storesystem\\images\\" + "ProfileImage_" + invoiceId + ".jpg";
 
         Path path = Paths.get(imagePath);
         try {
             return Files.readAllBytes(path);
-        }catch (NoSuchFileException e){
+        } catch (NoSuchFileException e) {
             System.err.println("No Such File Exists : " + imagePath);
             String defaultImagePath =
                     "E:\\Store System\\Strore_Backend\\src\\main\\java\\com\\zayar\\storesystem\\images\\DefaultImage.jpg";
             path = Paths.get(defaultImagePath);
             return Files.readAllBytes(path);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public void updateImagePhoto(Long invoiceId, MultipartFile file) throws IOException {
+        Path imagePath = Paths.get
+                ("E:\\Store System\\Strore_Backend\\src\\main\\java\\com\\zayar\\storesystem\\images\\" + "ProfileImage_" + invoiceId + ".jpg");
+        Files.write(imagePath , file.getBytes());
     }
 }

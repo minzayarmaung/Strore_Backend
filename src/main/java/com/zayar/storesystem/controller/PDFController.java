@@ -60,7 +60,7 @@ public class PDFController {
     }
 
     @GetMapping("/pdf/generatePDFStockList")
-    public ResponseEntity<InputStreamResource> downloadStockPdf(){
+    public ResponseEntity<InputStreamResource> downloadStockPdf() throws IOException {
         List<Stock> stockDetails = stockService.getAllStockData();
         ByteArrayInputStream bis = stockListPDFService.generatePDF(stockDetails);
         HttpHeaders headers = new HttpHeaders();
